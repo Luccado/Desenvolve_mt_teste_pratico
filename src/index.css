@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Garantir que o backdrop blur funcione corretamente */
+.modal-backdrop {
+  backdrop-filter: blur(8px) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 1 !important;
+}
+
+/* Aplicar blur apenas no conteúdo por trás do modal */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Garantir que o modal não seja afetado pelo blur */
+.modal-content {
+  filter: none !important;
+  position: relative;
+  z-index: 101;
+}

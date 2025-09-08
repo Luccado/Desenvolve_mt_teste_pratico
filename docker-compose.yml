@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  desenvolve-mt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: desenvolve-mt-app
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.desenvolve-mt.rule=Host(`localhost`)"
+      - "traefik.http.services.desenvolve-mt.loadbalancer.server.port=80"
