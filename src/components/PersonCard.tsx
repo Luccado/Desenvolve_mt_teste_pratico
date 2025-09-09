@@ -1,25 +1,61 @@
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { PessoaResumo } from '../types/people';
 import { StatusBadge } from './StatusBadge';
 import { formatDate } from '../utils';
 
 export function PersonCard({ p }: { p: PessoaResumo }) {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoading, setImageLoading] = useState(true);
+
+  const handleImageError = () => {
+    console.log('Erro ao carregar imagem para:', p.nome, 'URL:', p.urlFoto);
+    setImageError(true);
+    setImageLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Imagem carregada com sucesso para:', p.nome);
+    setImageLoading(false);
+  };
+
+  // Verificar se a URL da imagem é válida
+  useEffect(() => {
+    if (!p.urlFoto || p.urlFoto.trim() === '') {
+      console.log('URL da imagem vazia para:', p.nome);
+      setImageError(true);
+      setImageLoading(false);
+    }
+  }, [p.urlFoto, p.nome]);
 
   return (
     <Link 
       to={`/pessoa/${p.id}`} 
       className="group bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 hover:border-blue-200 hover:-translate-y-1"
     >
-      <div className="relative">
-        <img 
-          src={p.urlFoto} 
-          alt={p.nome} 
-          className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" 
-        />
+      <div className="relative overflow-hidden">
+        {!imageError && p.urlFoto && p.urlFoto.trim() !== '' ? (
+          <img 
+            src={p.urlFoto} 
+            alt={p.nome} 
+            className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300" 
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+          />
+        ) : (
+          <div className="w-full h-64 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center group-hover:scale-105 transition-transform duration-300">
+            <div className="text-center">
+              <svg className="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              <p className="text-gray-500 text-sm">Foto não disponível</p>
+            </div>
+          </div>
+        )}
         <div className="absolute top-3 right-3">
           <StatusBadge encontradoVivo={p.ultimaOcorrencia.encontradoVivo} />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 group-hover:scale-105 transition-transform duration-300 origin-bottom">
           <h3 className="text-white font-semibold text-lg mb-1">{p.nome}</h3>
           <p className="text-white/90 text-sm">Idade: {p.idade} anos</p>
         </div>

@@ -28,27 +28,27 @@ export function Pagination({ page, totalPages, onChange }:{
   };
 
   return (
-    <div className="flex items-center justify-center space-x-2">
+    <div className="flex items-center justify-center space-x-1 sm:space-x-2">
       <button 
         disabled={page <= 0} 
         onClick={() => onChange(page - 1)}
-        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+        className="px-2 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-base text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
       >
-        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 sm:w-4 sm:h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
-        Anterior
+        <span className="hidden xs:inline">Anterior</span>
       </button>
 
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-0 sm:space-x-1">
         {getVisiblePages().map((pageNum, index) => (
           pageNum === '...' ? (
-            <span key={index} className="px-3 py-2 text-gray-500">...</span>
+            <span key={index} className="px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm text-gray-500">...</span>
           ) : (
             <button
               key={index}
               onClick={() => onChange((pageNum as number) - 1)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-2 sm:px-3 py-1 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 page + 1 === pageNum
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-700 hover:bg-gray-100 border border-gray-300'
@@ -63,10 +63,10 @@ export function Pagination({ page, totalPages, onChange }:{
       <button 
         disabled={page >= totalPages - 1} 
         onClick={() => onChange(page + 1)}
-        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+        className="px-2 sm:px-4 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-base text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
       >
-        Próxima
-        <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <span className="hidden xs:inline">Próxima</span>
+        <svg className="w-3 h-3 sm:w-4 sm:h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </button>

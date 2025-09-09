@@ -45,15 +45,15 @@ export default function App() {
       </main>
       
       <footer className="bg-slate-800 border-t border-slate-600 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="text-sm text-slate-300">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
+            <div className="text-xs sm:text-sm text-slate-300 text-center sm:text-left">
               © 2025 Desenvolve MT. Sistema de busca de pessoas desaparecidas.
             </div>
-            <div className="flex items-center space-x-4 text-sm text-slate-300">
+            <div className="flex flex-col sm:flex-row items-center space-y-1 sm:space-y-0 sm:space-x-4 text-xs sm:text-sm text-slate-300">
               <span>API: Abitus</span>
-              <span>•</span>
-              <span>Desenvolvido para o projeto prático do Desenvolve MT - Lucca Oliveira</span>
+              <span className="hidden sm:inline">•</span>
+              <span className="text-center">Desenvolvido para o projeto prático do Desenvolve MT - Lucca Oliveira</span>
             </div>
           </div>
         </div>

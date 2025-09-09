@@ -28,15 +28,8 @@ export const useDebouncedSearch = <T>(
       // Atualizar valores anteriores
       previousValueRef.current = { ...newValue };
       
-      // Só disparar busca automática se houver mudanças nos campos de busca
-      const hasSearchChanges = Object.keys(newValue).some(key => {
-        const val = (newValue as any)[key];
-        return val !== undefined && val !== '';
-      });
-      
-      if (hasSearchChanges) {
-        debouncedSearch(newValue);
-      }
+      // Disparar busca automática sempre que houver mudanças
+      debouncedSearch(newValue);
     }
   }, [debouncedSearch]);
 

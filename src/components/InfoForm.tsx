@@ -7,7 +7,42 @@ import { useCallback, useState } from 'react';
 
 const schema = z.object({
   informacao: z.string().min(1, 'Informação é obrigatória'),
-  data: z.string().min(1, 'Data é obrigatória'),
+  data: z.string()
+    .min(1, 'Data é obrigatória')
+    .refine((value) => {
+      // Verificar se tem o formato DD/MM/YYYY
+      const dateRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+      if (!dateRegex.test(value)) {
+        return false;
+      }
+      
+      // Converter para Date
+      const [day, month, year] = value.split('/').map(Number);
+      const date = new Date(year, month - 1, day);
+      
+      // Verificar se a data é válida
+      if (date.getDate() !== day || date.getMonth() !== month - 1 || date.getFullYear() !== year) {
+        return false;
+      }
+      
+      // Verificar se não é data futura
+      const today = new Date();
+      today.setHours(23, 59, 59, 999); // Final do dia atual
+      if (date > today) {
+        return false;
+      }
+      
+      // Verificar se não é muito antiga (100 anos atrás)
+      const hundredYearsAgo = new Date();
+      hundredYearsAgo.setFullYear(today.getFullYear() - 100);
+      if (date < hundredYearsAgo) {
+        return false;
+      }
+      
+      return true;
+    }, {
+      message: 'Data inválida. Use o formato DD/MM/YYYY, não pode ser futura nem anterior a 100 anos'
+    }),
   descricao: z.string().min(1, 'Descrição é obrigatória'),
 });
 
@@ -140,7 +175,7 @@ export function InfoForm({ onClose, onSubmit, isLoading = false, message }: Info
             <label className="block text-sm font-medium text-gray-700">Data do Avistamento</label>
             <DateInput
               {...register('data')}
-              placeholder="Digite apenas números (ex: 15032024)"
+              placeholder="DD/MM/AAAA (ex: 15/03/2024)"
               maxLength={10}
             />
             {errors.data && (

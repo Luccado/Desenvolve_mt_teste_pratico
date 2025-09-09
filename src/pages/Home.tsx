@@ -1,25 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { getEstatistico, getPessoasFiltro, resetApiAvailability } from '../services/people';
+import { useQuery } from '@tanstack/react-query';
+import { getPessoasFiltro } from '../services/people';
 import { PersonCard } from '../components/PersonCard';
 import { Pagination } from '../components/Pagination';
 import { SearchBar, SearchValues } from '../components/SearchBar';
-import { ApiStatusBanner } from '../components/ApiStatusBanner';
 import { Page, PessoaResumo } from '../types/people';
 import { scrollToTop, scrollToElement } from '../utils';
-import { useApiStatus } from '../hooks/useApiStatus';
 import { useDebouncedSearch } from '../hooks/useDebouncedSearch';
 
 export function Home() {
   const [page, setPage] = useState(0);
   const perPage = 10;
-  const queryClient = useQueryClient();
-  
-  const apiStatusQuery = useApiStatus();
   
   const { value: filters, setValue: setFilters, handleValueChange } = useDebouncedSearch<SearchValues>(
     {},
-    2000,
+    500, // Delay reduzido para melhor responsividade
     (newFilters) => setFilters(newFilters)
   );
 
@@ -28,8 +23,8 @@ export function Home() {
     queryFn: () => {
       const filtrosProcessados = {
         ...filters,
-        sexo: (filters.sexo as any) || undefined,
-        status: (filters.status as any) || undefined,
+        sexo: (filters.sexo && filters.sexo !== '') ? filters.sexo : undefined,
+        status: (filters.status && filters.status !== '') ? filters.status : undefined,
         faixaIdadeInicial: (filters.faixaIdadeInicial === '' || isNaN(Number(filters.faixaIdadeInicial))) ? undefined : Number(filters.faixaIdadeInicial),
         faixaIdadeFinal: (filters.faixaIdadeFinal === '' || isNaN(Number(filters.faixaIdadeFinal))) ? undefined : Number(filters.faixaIdadeFinal),
         pagina: page,
@@ -38,15 +33,11 @@ export function Home() {
       
       return getPessoasFiltro(filtrosProcessados);
     },
-    placeholderData: (previousData) => previousData,
+    // placeholderData: (previousData) => {
+    //   console.log('🔍 Usando placeholderData:', previousData?.content?.length, 'pessoas');
+    //   return previousData;
+    // },
   });
-
-  const estat = useQuery({ queryKey: ['estatistico'], queryFn: getEstatistico });
-
-  const handleApiRecheck = () => {
-    resetApiAvailability();
-    queryClient.invalidateQueries({ queryKey: ['api-status'] });
-  };
 
   useEffect(() => { 
     setPage(0);

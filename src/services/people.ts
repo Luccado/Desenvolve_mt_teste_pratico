@@ -1,63 +1,13 @@
 import { api } from './api';
-import { Page, PessoaResumo, PessoaDetalhe, Estatistico, Sexo, Status } from '../types/people';
+import { PessoaDetalhe, Estatistico, FiltroPessoas, InfoPayload } from '../types/people';
 import { getPessoasFiltroMock, getPessoaMock, getEstatisticoMock } from './mockData';
 
-let apiAvailable: boolean | null = null;
-let lastApiCheck: number = 0;
-const API_CHECK_INTERVAL = 30000;
-
-async function checkApiAvailability(): Promise<boolean> {
-  const now = Date.now();
-  
-  if (apiAvailable !== null && (now - lastApiCheck) < API_CHECK_INTERVAL) {
-    return apiAvailable;
-  }
-  
-  try {
-    const response = await fetch('/api/pessoas/aberto/estatistico', {
-      method: 'GET',
-      headers: { 'Accept': 'application/json' },
-      signal: AbortSignal.timeout(10000)
-    });
-    
-    const isOk = response.ok && response.status === 200;
-    apiAvailable = isOk;
-    lastApiCheck = now;
-    
-    if (apiAvailable) {
-      console.log('API está disponível - Status:', response.status);
-    } else {
-      console.warn('API não está respondendo corretamente - Status:', response.status);
-    }
-    
-    return apiAvailable;
-  } catch (error) {
-    console.warn('Erro ao verificar API:', error);
-    apiAvailable = false;
-    lastApiCheck = now;
-    return false;
-  }
-}
-
-export function resetApiAvailability() {
-  apiAvailable = null;
-  lastApiCheck = 0;
-  console.log('Cache da API resetado, próxima requisição verificará novamente');
-}
-
-export interface FiltroPessoas {
-  nome?: string;
-  faixaIdadeInicial?: number;
-  faixaIdadeFinal?: number;
-  sexo?: Sexo;
-  status?: Status;
-  pagina?: number;
-  porPagina?: number;
-}
-
 export async function getPessoasFiltro(filtros: FiltroPessoas) {
-  console.log('Tentando carregar dados da API real...');
+  console.log('Usando dados mock com quantidades reais da API...');
+  return getPessoasFiltroMock(filtros);
   
+  // Código da API real comentado temporariamente para testar com dados mock
+  /*
   try {
     const params = new URLSearchParams(
       Object.entries(filtros).reduce((acc, [k, v]) => {
@@ -89,6 +39,7 @@ export async function getPessoasFiltro(filtros: FiltroPessoas) {
     console.log('Usando dados mock como fallback');
     return getPessoasFiltroMock(filtros);
   }
+  */
 }
 
 export async function getPessoa(id: number) {
@@ -127,16 +78,6 @@ export async function getEstatistico() {
     console.log('Usando dados mock como fallback');
     return getEstatisticoMock();
   }
-}
-
-export interface InfoPayload {
-  ocoId: number | string;
-  informacao: string;
-  descricao: string;
-  data: string;
-  files?: File[];
-  latitude?: number;
-  longitude?: number;
 }
 
 export async function postInformacao(p: InfoPayload) {

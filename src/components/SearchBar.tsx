@@ -1,14 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Sexo, Status } from '../types/people';
-
-export interface SearchValues {
-  nome?: string;
-  sexo?: Sexo | '';
-  status?: Status | '';
-  faixaIdadeInicial?: number | '';
-  faixaIdadeFinal?: number | '';
-}
+import { Sexo, Status, SearchValues } from '../types/people';
 
 interface SearchBarProps {
   onSubmit: (v: SearchValues) => void;

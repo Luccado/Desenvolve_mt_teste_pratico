@@ -1,149 +1,102 @@
 import { Page, PessoaResumo, PessoaDetalhe, Estatistico } from '../types/people';
 
-const mockPessoas: PessoaResumo[] = [
-  {
-    id: 1,
-    nome: "Maria Silva Santos",
-    idade: 25,
-    sexo: "FEMININO",
-    urlFoto: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1001,
-      dtDesaparecimento: "2024-03-15T10:30:00.000Z",
-      localDesaparecimentoConcat: "Centro, Cuiabá - MT",
-      encontradoVivo: false,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Vestido azul, sandália branca",
-        informacao: "Última vez vista na universidade"
+// Gerador de dados mock com quantidades reais da API
+const generateMockPessoas = (): PessoaResumo[] => {
+  const pessoas: PessoaResumo[] = [];
+  const nomes = [
+    "Maria Silva Santos", "João Pedro Oliveira", "Ana Carolina Costa", "Carlos Eduardo Lima",
+    "Fernanda Rodrigues", "Roberto Alves", "Juliana Mendes", "Marcos Antonio", "Patricia Lima",
+    "Ricardo Santos", "Camila Oliveira", "Diego Costa", "Larissa Silva", "Felipe Alves",
+    "Gabriela Mendes", "Thiago Lima", "Isabela Santos", "Rafael Oliveira", "Beatriz Costa",
+    "Lucas Silva", "Mariana Alves", "Pedro Mendes", "Amanda Lima", "Bruno Santos",
+    "Carolina Oliveira", "Daniel Costa", "Eduarda Silva", "Fábio Alves", "Giovana Mendes",
+    "Henrique Lima", "Ingrid Santos", "Júlio Oliveira", "Karina Costa", "Leandro Silva"
+  ];
+  
+  const cidades = [
+    "Cuiabá - MT", "Várzea Grande - MT", "Rondonópolis - MT", "Sinop - MT", "Cáceres - MT",
+    "Barra do Garças - MT", "Tangará da Serra - MT", "Sorriso - MT", "Primavera do Leste - MT",
+    "Nova Mutum - MT", "Campo Verde - MT", "Lucas do Rio Verde - MT", "Pontes e Lacerda - MT",
+    "Alta Floresta - MT", "Colíder - MT", "Juína - MT", "Mirassol d'Oeste - MT", "Poconé - MT"
+  ];
+  
+  const vestimentas = [
+    "Camisa azul, calça jeans", "Vestido floral, sandália", "Blusa preta, calça jeans",
+    "Camisa branca, calça social", "Vestido rosa, sandália branca", "Camisa polo, bermuda",
+    "Blusa amarela, short jeans", "Camisa xadrez, calça social", "Vestido azul, sandália",
+    "Camisa verde, calça jeans", "Blusa roxa, calça social", "Camisa vermelha, bermuda"
+  ];
+  
+  const informacoes = [
+    "Última vez vista na universidade", "Foi encontrado em bom estado de saúde",
+    "Desapareceu após sair da escola", "Não retornou do trabalho", "Foi localizada em outro estado",
+    "Desapareceu durante pescaria", "Não retornou da festa", "Foi encontrado em hospital",
+    "Última vez vista no shopping", "Desapareceu durante viagem", "Foi localizada em casa de parentes",
+    "Não retornou da igreja", "Desapareceu durante passeio", "Foi encontrado em delegacia"
+  ];
+  
+  // 428 pessoas DESAPARECIDAS (encontradoVivo: false)
+  for (let i = 1; i <= 428; i++) {
+    const nome = nomes[i % nomes.length] + (i > nomes.length ? ` ${Math.floor(i / nomes.length) + 1}` : '');
+    const cidade = cidades[i % cidades.length];
+    const vestimenta = vestimentas[i % vestimentas.length];
+    const informacao = informacoes[i % informacoes.length];
+    
+    pessoas.push({
+      id: i,
+      nome,
+      idade: Math.floor(Math.random() * 70) + 1,
+      sexo: Math.random() > 0.5 ? "MASCULINO" : "FEMININO",
+      urlFoto: Math.random() > 0.1 ? `https://picsum.photos/300/400?random=${i}` : "",
+      ultimaOcorrencia: {
+        ocoId: 1000 + i,
+        dtDesaparecimento: new Date(2023 + Math.random(), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
+        localDesaparecimentoConcat: cidade,
+        encontradoVivo: false,
+        ocorrenciaEntrevDesapDTO: {
+          vestimentasDesaparecido: vestimenta,
+          informacao
+        }
       }
-    }
-  },
-  {
-    id: 2,
-    nome: "João Pedro Oliveira",
-    idade: 32,
-    sexo: "MASCULINO",
-    urlFoto: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1002,
-      dtDesaparecimento: "2024-02-20T14:15:00.000Z",
-      localDesaparecimentoConcat: "Várzea Grande - MT",
-      encontradoVivo: true,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Camisa branca, calça jeans",
-        informacao: "Foi encontrado em bom estado de saúde"
-      }
-    }
-  },
-  {
-    id: 3,
-    nome: "Ana Carolina Costa",
-    idade: 18,
-    sexo: "FEMININO",
-    urlFoto: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1003,
-      dtDesaparecimento: "2024-01-10T08:45:00.000Z",
-      localDesaparecimentoConcat: "Rondonópolis - MT",
-      encontradoVivo: false,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Blusa rosa, short jeans",
-        informacao: "Desapareceu após sair da escola"
-      }
-    }
-  },
-  {
-    id: 4,
-    nome: "Carlos Eduardo Lima",
-    idade: 45,
-    sexo: "MASCULINO",
-    urlFoto: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1004,
-      dtDesaparecimento: "2023-12-05T16:20:00.000Z",
-      localDesaparecimentoConcat: "Sinop - MT",
-      encontradoVivo: false,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Camisa xadrez, calça social",
-        informacao: "Não retornou do trabalho"
-      }
-    }
-  },
-  {
-    id: 5,
-    nome: "Fernanda Rodrigues",
-    idade: 28,
-    sexo: "FEMININO",
-    urlFoto: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1005,
-      dtDesaparecimento: "2024-04-02T12:30:00.000Z",
-      localDesaparecimentoConcat: "Cuiabá - MT",
-      encontradoVivo: true,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Vestido floral, sandália",
-        informacao: "Foi localizada em outro estado"
-      }
-    }
-  },
-  {
-    id: 6,
-    nome: "Roberto Alves",
-    idade: 55,
-    sexo: "MASCULINO",
-    urlFoto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1006,
-      dtDesaparecimento: "2023-11-18T09:15:00.000Z",
-      localDesaparecimentoConcat: "Cáceres - MT",
-      encontradoVivo: false,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Camisa polo, bermuda",
-        informacao: "Desapareceu durante pescaria"
-      }
-    }
-  },
-  {
-    id: 7,
-    nome: "Juliana Mendes",
-    idade: 22,
-    sexo: "FEMININO",
-    urlFoto: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1007,
-      dtDesaparecimento: "2024-03-28T19:45:00.000Z",
-      localDesaparecimentoConcat: "Várzea Grande - MT",
-      encontradoVivo: false,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Blusa preta, calça jeans",
-        informacao: "Não retornou da festa"
-      }
-    }
-  },
-  {
-    id: 8,
-    nome: "Marcos Antonio",
-    idade: 38,
-    sexo: "MASCULINO",
-    urlFoto: "https://images.unsplash.com/photo-1507591064344-4c6ce005b128?w=300&h=400&fit=crop",
-    ultimaOcorrencia: {
-      ocoId: 1008,
-      dtDesaparecimento: "2024-01-25T11:00:00.000Z",
-      localDesaparecimentoConcat: "Rondonópolis - MT",
-      encontradoVivo: true,
-      ocorrenciaEntrevDesapDTO: {
-        vestimentasDesaparecido: "Camisa azul, calça jeans",
-        informacao: "Foi encontrado em hospital"
-      }
-    }
+    });
   }
-];
+  
+  // 753 pessoas LOCALIZADAS (encontradoVivo: true)
+  for (let i = 429; i <= 1181; i++) {
+    const nome = nomes[i % nomes.length] + (i > nomes.length ? ` ${Math.floor(i / nomes.length) + 1}` : '');
+    const cidade = cidades[i % cidades.length];
+    const vestimenta = vestimentas[i % vestimentas.length];
+    const informacao = informacoes[i % informacoes.length];
+    
+    pessoas.push({
+      id: i,
+      nome,
+      idade: Math.floor(Math.random() * 70) + 1,
+      sexo: Math.random() > 0.5 ? "MASCULINO" : "FEMININO",
+      urlFoto: Math.random() > 0.1 ? `https://picsum.photos/300/400?random=${i}` : "",
+      ultimaOcorrencia: {
+        ocoId: 1000 + i,
+        dtDesaparecimento: new Date(2023 + Math.random(), Math.floor(Math.random() * 12), Math.floor(Math.random() * 28) + 1).toISOString(),
+        localDesaparecimentoConcat: cidade,
+        encontradoVivo: true,
+        ocorrenciaEntrevDesapDTO: {
+          vestimentasDesaparecido: vestimenta,
+          informacao
+        }
+      }
+    });
+  }
+  
+  return pessoas;
+};
+
+const mockPessoas: PessoaResumo[] = generateMockPessoas();
 
 const mockEstatistico: Estatistico = {
-  quantPessoasDesaparecidas: 5,
-  quantPessoasEncontradas: 3,
-  totalRegistros: 8,
-  percentualEncontrados: 37.5
+  quantPessoasDesaparecidas: 428,
+  quantPessoasEncontradas: 753,
+  totalRegistros: 1181,
+  percentualEncontrados: 63.8
 };
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -186,6 +139,7 @@ export const getPessoasFiltroMock = async (filtros: any): Promise<Page<PessoaRes
   
   const content = pessoasFiltradas.slice(inicio, fim);
   const totalPages = Math.ceil(pessoasFiltradas.length / porPagina);
+  
   
   return {
     content,

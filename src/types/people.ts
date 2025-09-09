@@ -39,3 +39,31 @@ export interface Estatistico {
 }
 
 export interface PessoaDetalhe extends PessoaResumo {}
+
+export interface FiltroPessoas {
+  nome?: string;
+  faixaIdadeInicial?: number;
+  faixaIdadeFinal?: number;
+  sexo?: Sexo;
+  status?: Status;
+  pagina?: number;
+  porPagina?: number;
+}
+
+export interface InfoPayload {
+  ocoId: number | string;
+  informacao: string;
+  descricao: string;
+  data: string;
+  files?: File[];
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface SearchValues {
+  nome?: string;
+  sexo?: Sexo | '';
+  status?: Status | '';
+  faixaIdadeInicial?: number | '';
+  faixaIdadeFinal?: number | '';
+}

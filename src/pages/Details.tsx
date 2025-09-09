@@ -1,48 +1,32 @@
 import { useParams } from 'react-router-dom';
-import { useQuery, useMutation } from '@tanstack/react-query';
-import { getPessoa, postInformacao } from '../services/people';
 import { StatusBadge } from '../components/StatusBadge';
 import { useState } from 'react';
 import { InfoForm } from '../components/InfoForm';
-import { formatDate, formatDateForAPI } from '../utils';
+import { formatDate } from '../utils';
+import { usePersonDetails, usePersonInfoMutation } from '../services/usePersonDetails';
 
 export function Details() {
   const { id } = useParams();
-  const { data, isLoading, isError, error } = useQuery({
-    queryKey: ['pessoa', id],
-    queryFn: () => getPessoa(Number(id)),
-    enabled: !!id,
-  });
+  const { data, isLoading, isError, error } = usePersonDetails(id);
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState<{type: 'success' | 'error', text: string} | null>(null);
 
-  const mutation = useMutation({
-    mutationFn: (data: any) => {
-      return postInformacao({
-        ocoId: data.ocoId,
-        informacao: data.informacao,
-        descricao: data.descricao,
-        data: formatDateForAPI(data.data),
-        files: data.files,
-        latitude: data.coords?.lat,
-        longitude: data.coords?.lng,
-      });
-    },
-    onSuccess: (data) => {
-      console.log('Informação enviada com sucesso:', data);
-      setMessage({ type: 'success', text: 'Informação enviada com sucesso!' });
-      setTimeout(() => setOpen(false), 2000);
-    },
-    onError: (error) => {
-      console.error('Erro ao enviar informação:', error);
-      setMessage({ type: 'error', text: 'Erro ao enviar informação. Tente novamente.' });
-    },
-  });
+  const mutation = usePersonInfoMutation();
 
   const handleFormSubmit = (data: any) => {
     mutation.mutate({
       ...data,
       ocoId: p.ultimaOcorrencia.ocoId
+    }, {
+      onSuccess: (data) => {
+        console.log('Informação enviada com sucesso:', data);
+        setMessage({ type: 'success', text: 'Informação enviada com sucesso!' });
+        setTimeout(() => setOpen(false), 2000);
+      },
+      onError: (error) => {
+        console.error('Erro ao enviar informação:', error);
+        setMessage({ type: 'error', text: 'Erro ao enviar informação. Tente novamente.' });
+      },
     });
   };
 
